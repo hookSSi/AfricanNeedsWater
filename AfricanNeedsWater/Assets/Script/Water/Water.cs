@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class Water : MonoBehaviour {
 
+    public GameObject m_particle; // 물 파괴 효과
     public float m_speed;   // 속도
     public int distance;    // 스크린에서 어느 정도 멀어지면 파괴하는 가?
 
@@ -53,6 +54,15 @@ public class Water : MonoBehaviour {
         }
         else
             return false;
+    }
+    virtual protected void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Ground")
+        {
+            Instantiate(m_particle, transform.position, transform.rotation);
+            WaterList.Enqueue(this.gameObject);
+            this.gameObject.SetActive(false);
+        }
     }
     /*   Get,Set   */
     public float Speed
