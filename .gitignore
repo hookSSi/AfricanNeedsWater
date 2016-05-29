@@ -1,5 +1,5 @@
-Bit_Blaster/Library/*
-Bit_Blaster/temp/*
+watergameproject/Library/*
+watergameproject/temp/*
 *.csproj
 *.suo
 *.sln
