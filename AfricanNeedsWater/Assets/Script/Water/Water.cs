@@ -41,11 +41,11 @@ public class Water : MonoBehaviour {
         }
 
     }
-    virtual protected void Move()
+    protected virtual void Move()
     {
         rigid.velocity = new Vector3(Mathf.Cos(m_Angle * Mathf.Deg2Rad), Mathf.Sin(m_Angle * Mathf.Deg2Rad)) * m_speed;
     }
-    virtual protected bool DestroyOutOfMap()
+    protected virtual bool DestroyOutOfMap()
     {
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(transform.position);
         if (screenPosition.y > Screen.height + distance || screenPosition.y < -distance || screenPosition.x > Screen.width + distance || screenPosition.x < -distance)
@@ -55,7 +55,7 @@ public class Water : MonoBehaviour {
         else
             return false;
     }
-    virtual protected void OnCollisionEnter2D(Collision2D other)
+    protected virtual void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "Ground" || other.gameObject.tag == "Player2")
         {

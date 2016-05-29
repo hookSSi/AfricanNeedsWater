@@ -5,40 +5,45 @@ public class BarScript : MonoBehaviour
 {
     Rect box;
 
-    Texture2D bg;
-    Texture2D fg;
+    Texture2D m_backGround;
+    Texture2D m_frontGround;
 
     float energy = 50;
     int maxEnergy = 100;
 
 
-    public BarScript(float left, float top, float width, float height, Texture2D fgTexture, Texture2D bgTexture)
+    public BarScript(float left, float top, float width, float height, Texture2D p_frontGround, Texture2D p_backGround)
     {
         SetRect(left, top, width, height);
-        bg = bgTexture;
-        fg = fgTexture;
+        m_backGround = p_frontGround;
+        m_frontGround = p_frontGround;
     }
-    public BarScript(int i, Texture2D fgTexture, Texture2D bgTexture)
+    public BarScript(int i, Texture2D p_frontGround, Texture2D p_backGround)
     {
         SetRect(i);
-        bg = bgTexture;
-        fg = fgTexture;
+        m_backGround = p_backGround;
+        m_frontGround = p_frontGround;
     }
-    public BarScript(float left, float top, float width, float height, Texture2D fgTexture, Texture2D bgTexture, int energy)
+    public BarScript(float left, float top, float width, float height, Texture2D p_frontGround, Texture2D p_backGround, int energy)
     {
         this.energy = energy;
         SetRect(left, top, width, height);
-        bg = bgTexture;
-        fg = fgTexture;
+        m_backGround = p_backGround;
+        m_frontGround = p_frontGround;
     }
 
-    public BarScript(int i, Texture2D fgTexture, Texture2D bgTexture, int energy)
+    public BarScript(int i, Texture2D p_frontGround, Texture2D p_backGround, int energy)
     {
         this.energy = energy;
         SetRect(i);
-        bg = bgTexture;
-        fg = fgTexture;
+        m_backGround = p_backGround;
+        m_frontGround = p_frontGround;
     }
+    public BarScript(float p_width,float p_height,Texture2D p_frontGround, Texture2D p_backGround,int energy)
+    {
+        
+    }
+
     public void EnergyUpdate()
     { // Update()에서 호출
         energy += Input.GetAxisRaw("Horizontal");
@@ -49,8 +54,8 @@ public class BarScript : MonoBehaviour
     {      //OnGUI에서 호출
         GUI.BeginGroup(box);
         {
-            GUI.DrawTexture(new Rect(0, 0, box.width, box.height), bg, ScaleMode.StretchToFill);
-            GUI.DrawTexture(new Rect(0, 0, box.width * energy / maxEnergy, box.height), fg, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(0, 0, box.width, box.height), m_backGround, ScaleMode.StretchToFill);
+            GUI.DrawTexture(new Rect(0, 0, box.width * energy / maxEnergy, box.height), m_frontGround, ScaleMode.StretchToFill);
         }
         GUI.EndGroup();
     }
@@ -74,22 +79,22 @@ public class BarScript : MonoBehaviour
             return false;
         }
     }
-    public void SetRect(float a, float b, float c, float d)
+    public void SetRect(float x, float y, float width, float height)
     {
-        box = new Rect(a, b, c, d);
+        box = new Rect(x, y, width, height);
     }
     public void SetRect(int a)
     {
         switch (a)
         {
             case 0:
-                box = new Rect(5, Screen.height - 10 - Screen.height * 20 / 480, Screen.width * 100 / 320, Screen.height * 20 / 480);
+                box = new Rect(5, Screen.height - 10 - Screen.height * 20 / 800, Screen.width * 100 / 1600, Screen.height * 20 / 800);
                 break;
             case 1:
-                box = new Rect(Screen.width / 2 - Screen.width * 100 / 320 / 2, Screen.height - 10 - Screen.height * 20 / 480, Screen.width * 100 / 320, Screen.height * 20 / 480);
+                box = new Rect(Screen.width / 2 - Screen.width * 100 / 1600 / 2, Screen.height - 10 - Screen.height * 20 / 800, Screen.width * 100 / 1600, Screen.height * 20 / 800);
                 break;
             case 2:
-                box = new Rect(Screen.width - (Screen.width * 100 / 320) - 5, Screen.height - 10 - Screen.height * 20 / 480, Screen.width * 100 / 320, Screen.height * 20 / 480);
+                box = new Rect(Screen.width - (Screen.width * 100 / 1600) - 5, Screen.height - 10 - Screen.height * 20 / 480, Screen.width * 100 / 1600, Screen.height * 20 / 800);
                 break;
         }
     }
