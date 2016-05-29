@@ -13,6 +13,7 @@ public class Player2Control : MonoBehaviour
 	private float jumpHeight = 400f;
 	private float animationSpeed = 1f;
 	private bool isDash, isJumpping;
+	private bool isChanging;
 
 	// Use this for initialization
 	void Start()
@@ -21,6 +22,7 @@ public class Player2Control : MonoBehaviour
 		count_ScoreCoin = 0;
 		anim.enabled = false;
 		isJumpping = false;
+		isChanging = false;
 	}
 
 	// Update is called once per frame
@@ -94,21 +96,36 @@ public class Player2Control : MonoBehaviour
 
 	void SetScoreCoin()
 	{
-		if ((count_ScoreCoin / 5) % 5 == 0)
+		if (count_ScoreCoin == 25 && !isChanging) isChanging = true;
+
+		if (isChanging)
 		{
 			foreach (GameObject obj in scoreCoin) obj.SetActive(false);
 			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
+
+			count_ScoreCoin = 0;
+			isChanging = false;
 		}
 
-		scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
+		if (count_ScoreCoin > 0) scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
 	}
-
+	
 	void OnCollisionEnter2D(Collision2D col)
 	{
 		if (isJumpping && col.gameObject.tag == "Ground")
 		{
 			isJumpping = false;
 			anim.SetTrigger("Stand");
+		}
+
+		if (col.gameObject.tag == "Water")
+		{
+			col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
+			anim.SetTrigger("Die");
+			transform.eulerAngles = new Vector3(0, 180, 20);
+			//this.GetComponent<BoxCollider2D>().enabled = false;
+			//this.GetComponent<Rigidbody2D>().gravityScale = 0;
+			//Time.timeScale = 0;
 		}
 	}
 }

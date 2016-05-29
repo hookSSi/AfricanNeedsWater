@@ -64,14 +64,22 @@ public class Water : MonoBehaviour {
             this.gameObject.SetActive(false);
         }
 
-		if (other.gameObject.tag == "Player2")
+		/*if (other.gameObject.tag == "Player2")
 		{
 			Instantiate(m_particle, transform.position, transform.rotation);
 			WaterList.Enqueue(this.gameObject);
 			other.gameObject.GetComponent<Player2Control>().AddCount_ScoreCoin();
 			this.gameObject.SetActive(false);
-		}
+		}*/
 	}
+
+	public void HandlePlayer2Collision()
+	{
+		Instantiate(m_particle, transform.position, transform.rotation);
+		WaterList.Enqueue(this.gameObject);
+		this.gameObject.SetActive(false);
+	}
+
     /*   Get,Set   */
     public float Speed
     {
