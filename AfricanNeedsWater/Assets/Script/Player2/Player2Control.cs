@@ -28,7 +28,6 @@ public class Player2Control : MonoBehaviour
 	{
 		Move();
 		SetAnimationSpeed();
-		AddCount_ScoreCoin();
 		SetScoreCoin();
 	}
 
@@ -88,7 +87,7 @@ public class Player2Control : MonoBehaviour
 		}
 	}
 
-	void AddCount_ScoreCoin()
+	public void AddCount_ScoreCoin()
 	{
 		count_ScoreCoin++;
 	}

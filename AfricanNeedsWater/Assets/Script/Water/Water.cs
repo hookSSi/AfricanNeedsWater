@@ -55,15 +55,23 @@ public class Water : MonoBehaviour {
         else
             return false;
     }
-    protected virtual void OnCollisionEnter2D(Collision2D other)
+	protected virtual void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Ground" || other.gameObject.tag == "Player2" || other.gameObject.tag == "Wall")
+        if (other.gameObject.tag == "Ground" || other.gameObject.tag == "Wall")
         {
             Instantiate(m_particle, transform.position, transform.rotation);
             WaterList.Enqueue(this.gameObject);
             this.gameObject.SetActive(false);
         }
-    }
+
+		if (other.gameObject.tag == "Player2")
+		{
+			Instantiate(m_particle, transform.position, transform.rotation);
+			WaterList.Enqueue(this.gameObject);
+			other.gameObject.GetComponent<Player2Control>().AddCount_ScoreCoin();
+			this.gameObject.SetActive(false);
+		}
+	}
     /*   Get,Set   */
     public float Speed
     {
