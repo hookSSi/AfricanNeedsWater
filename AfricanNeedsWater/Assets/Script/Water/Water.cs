@@ -57,7 +57,7 @@ public class Water : MonoBehaviour {
     }
     virtual protected void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Ground")
+        if (other.gameObject.tag == "Ground" || other.gameObject.tag == "Player2")
         {
             Instantiate(m_particle, transform.position, transform.rotation);
             WaterList.Enqueue(this.gameObject);
