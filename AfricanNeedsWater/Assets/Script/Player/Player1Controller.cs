@@ -126,7 +126,11 @@ public class Player1Controller : MonoBehaviour {
             transform.position = new Vector3(800, transform.position.y, 0);
         }
     }
+    virtual protected void OnGUI()
+    {
 
+    }
+   
     /*     Get,Set   */
     public float Speed
     {
