@@ -9,6 +9,9 @@ public class Player1Controller : MonoBehaviour {
     public Transform m_firePosition;    // 발사 위치
     public float m_speed;   // 속도
     public Animator m_playerAnimator; // 플레이어 애니메이션 콘트롤러
+    public AudioSource m_soundPlayer; // 사운드 매니저
+    public AudioClip m_fireSound; // 발사 소리
+    public AudioClip m_overLoad; // 과부하 소리
 
     private float m_fireAngle;  // 발사 각도
     private Quaternion m_fireEulerAngle;    // 발사 오일러 각도
@@ -28,7 +31,7 @@ public class Player1Controller : MonoBehaviour {
     private float time; // 시간 흐름
     public Material m_baseMaterial; // 기본 메터리얼
     public Material m_effectMaterial; // 과부하 효과 메터리얼
-    private SpriteRenderer m_spriteRenderer;
+    private SpriteRenderer m_spriteRenderer; // 스프라이트 랜더러
 
     void Start ()
     {
@@ -97,6 +100,9 @@ public class Player1Controller : MonoBehaviour {
         /*   발사 처리   */
         if (Input.GetAxis("360_Trigger_P1") > 0 && m_curWaterGauge > 0 && !isOverLoad)
         {
+            m_soundPlayer.clip = m_fireSound;
+            if(!m_soundPlayer.isPlaying)
+                m_soundPlayer.Play();
             m_waterGaugeBar.SetActive(true);
             Fire();
         }
@@ -104,6 +110,7 @@ public class Player1Controller : MonoBehaviour {
         else if(!isOverLoad)
         {
             m_waterGaugeBar.SetActive(false);
+            m_soundPlayer.Pause();
             if (m_curWaterGauge < m_maxWaterGauge)
                 m_curWaterGauge += Time.deltaTime * m_waterRate;
             GamePad.SetVibration(0, 0, 0);
@@ -187,6 +194,9 @@ public class Player1Controller : MonoBehaviour {
             m_spriteRenderer.material = m_effectMaterial;
         else
             m_spriteRenderer.material = m_baseMaterial;
+        m_soundPlayer.clip = m_overLoad;
+        if (!m_soundPlayer.isPlaying)
+            m_soundPlayer.Play();
     }
     /*     Get,Set   */
     public float Speed
