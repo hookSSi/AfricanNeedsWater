@@ -49,7 +49,7 @@ public class Player2Control : MonoBehaviour
 			//anim.playbackTime = 0;
 			//anim.StartPlayback();
 			//anim.enabled = false;
-			anim.Play(anim.name, 1, anim.recorderStartTime);
+			//anim.Play(anim.name, 1, anim.recorderStartTime);
 			//Debug.Log(anim.name);
 			
 			anim.enabled = false;
