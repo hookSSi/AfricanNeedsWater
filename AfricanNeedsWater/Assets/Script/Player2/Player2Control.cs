@@ -95,7 +95,11 @@ public class Player2Control : MonoBehaviour
 
 	void SetScoreCoin()
 	{
-		if ((count_ScoreCoin / 5) % 5 == 0)	foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+		if ((count_ScoreCoin / 5) % 5 == 0)
+		{
+			foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
+		}
 
 		scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
 	}
