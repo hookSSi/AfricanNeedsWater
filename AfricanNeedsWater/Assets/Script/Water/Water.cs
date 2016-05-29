@@ -77,8 +77,4 @@ public class Water : MonoBehaviour {
             m_Angle = value;
         }
     }
-    public void SetAngle(float angle)
-    {
-        m_Angle = angle;
-    }
 }
