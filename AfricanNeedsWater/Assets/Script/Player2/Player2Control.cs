@@ -6,6 +6,7 @@ public class Player2Control : MonoBehaviour
 	public Animator anim;
 	public GameObject[] scoreCoin;
 	public GameObject scoreBar;
+	public GameObject obj_Child;
 
 	private int forwardValue = 1;
 	private int count_ScoreCoin;
@@ -35,7 +36,7 @@ public class Player2Control : MonoBehaviour
 
 	void Move()
 	{
-		if (Input.GetButton("Horizontal"))
+		if (Input.GetButton("Horizontal") && GameManager.isPlaying)
 		{
 			anim.enabled = true;
 			forwardValue = Input.GetAxis("Horizontal") > 0 ? 1 : -1;
@@ -49,17 +50,22 @@ public class Player2Control : MonoBehaviour
 			else GetComponent<Rigidbody2D>().velocity = new Vector2(forwardValue * speed, GetComponent<Rigidbody2D>().velocity.y);
 		}
 
-		if (Input.GetButton("Dash"))
+		if (Input.GetButton("Dash") && GameManager.isPlaying)
 		{
 			speed = 600;
 			isDash = true;
 		}
 
-		if (Input.GetButton("Jump") && !isJumpping)
+		if (Input.GetButton("Jump") && !isJumpping && GameManager.isPlaying)
 		{
 			isJumpping = true;
 			anim.SetTrigger("Jump");
 			GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//this.GetComponent<BoxCollider2D>().enabled = false;
+			//obj_Child.GetComponent<BoxCollider2D>().enabled = false;
+			//transform.position = new Vector3(transform.position.x, transform.position.y, -5);
 		}
 
 		if (forwardValue == 1) transform.eulerAngles = new Vector3(0, 0, 0);
@@ -110,7 +116,7 @@ public class Player2Control : MonoBehaviour
 		if (count_ScoreCoin > 0) scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
 	}
 	
-	void OnCollisionEnter2D(Collision2D col)
+	protected void OnCollisionEnter2D(Collision2D col)
 	{
 		if (isJumpping && col.gameObject.tag == "Ground")
 		{
@@ -121,11 +127,14 @@ public class Player2Control : MonoBehaviour
 		if (col.gameObject.tag == "Water")
 		{
 			col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
+			GameManager.isPlaying = false;
 			anim.SetTrigger("Die");
+
 			transform.eulerAngles = new Vector3(0, 180, 20);
-			//this.GetComponent<BoxCollider2D>().enabled = false;
-			//this.GetComponent<Rigidbody2D>().gravityScale = 0;
-			//Time.timeScale = 0;
+			transform.position = new Vector3(transform.position.x, transform.position.y, -5);
+			GetComponent<Rigidbody2D>().velocity = new Vector2(-forwardValue * speed, jumpHeight);
+			this.GetComponent<BoxCollider2D>().enabled = false;
+			obj_Child.GetComponent<BoxCollider2D>().enabled = false;
 		}
 	}
 }
