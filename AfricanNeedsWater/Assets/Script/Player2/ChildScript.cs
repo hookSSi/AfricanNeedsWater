@@ -10,12 +10,13 @@ public class ChildScript : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
 	{
-	
+		transform.localPosition = new Vector3(0.744f, -0.1339998f, 0);
+		transform.localEulerAngles = new Vector3(0, 0, 0);
 	}
 
-	void OnCollisionEnter2D(Collision2D col)
+	protected void OnCollisionEnter2D(Collision2D col)
 	{
 		if (col.gameObject.tag == "Water")
 		{

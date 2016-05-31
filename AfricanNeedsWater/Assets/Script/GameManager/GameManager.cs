@@ -4,10 +4,11 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+	public static bool isPlaying;
 	public Texture2D texture;
 	public Rect textureCrop;
 	public Text object_Text;
-
+	
 	private int stage = 1;
 
 	// Use this for initialization
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
 	{
 		textureCrop = new Rect(0f, 0f, 4f, 0f);
 		object_Text.GetComponent<Text>().text = "Stage " + stage;
+
+		isPlaying = true;
 	}
 
 	// Update is called once per frame
