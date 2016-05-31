@@ -8,11 +8,13 @@ public class Water : MonoBehaviour {
     public float m_speed;   // 속도
     public int distance;    // 스크린에서 어느 정도 멀어지면 파괴하는 가?
 
-    private float m_Angle;  // 각도
-    private Quaternion m_fireEulerAngle;    // 발사 오일러 각도
-    private Rigidbody2D rigid; // Rigidbody2D
+    protected float m_Angle;  // 각도
+    protected float m_dx;
+    protected float m_dy;
+    protected Quaternion m_fireEulerAngle;    // 발사 오일러 각도
+    protected Rigidbody2D rigid; // Rigidbody2D
     public static int count = 0;
-    private bool isOut;
+    protected bool isOut;
     public static Queue<GameObject> WaterList = new Queue<GameObject>();   // 물리스트
 
     void Awake ()
@@ -20,13 +22,15 @@ public class Water : MonoBehaviour {
         count++;
         rigid = GetComponent<Rigidbody2D>();
         m_Angle = 0;
+        m_dx = 0;
+        m_dy = 0;
         isOut = false;
     }
-	void Start()
+    void Start()
     {
-        Debug.Log(count);
+        Clear();
     }
-	void FixedUpdate ()
+    void FixedUpdate ()
     {
         isOut = DestroyOutOfMap();
 
@@ -34,7 +38,7 @@ public class Water : MonoBehaviour {
         {
             Move();
         }   
-        else
+        if(isOut)
         {
             WaterList.Enqueue(this.gameObject);
             this.gameObject.SetActive(false);
@@ -43,7 +47,7 @@ public class Water : MonoBehaviour {
     }
     protected virtual void Move()
     {
-        rigid.velocity = new Vector3(Mathf.Cos(m_Angle * Mathf.Deg2Rad), Mathf.Sin(m_Angle * Mathf.Deg2Rad)) * m_speed;
+        rigid.velocity = new Vector3(m_dx, m_dy) * m_speed;
     }
     protected virtual bool DestroyOutOfMap()
     {
@@ -79,7 +83,11 @@ public class Water : MonoBehaviour {
 		WaterList.Enqueue(this.gameObject);
 		this.gameObject.SetActive(false);
 	}
-
+    public void Clear()
+    {
+        m_dx = Mathf.Cos(m_Angle * Mathf.Deg2Rad);
+        m_dy = Mathf.Sin(m_Angle * Mathf.Deg2Rad);
+    }
     /*   Get,Set   */
     public float Speed
     {

@@ -56,19 +56,25 @@ public class Player1Controller : MonoBehaviour {
         {
             RotateFirePosition();
         }
+        /*
+        else
+        {
+            RotateToMouse();
+        }
+        */
         OutOfMap();
     }
 
     void FixedUpdate()
     {
         /*   플레이어 이동 처리   */
-        if (Input.GetAxis("Left_Horizontal_P1") > 0) // 오른쪽
+        if (Input.GetAxis("Left_Horizontal_P1") > 0 || Input.GetAxis("Horizontal2") > 0) // 오른쪽
         {
             flip.x = Mathf.Abs(flip.x);
             m_playerSprite.transform.localScale = flip;
             rigid.velocity = horizontal * m_speed;
         }
-        else if (Input.GetAxis("Left_Horizontal_P1") < 0) // 왼쪽
+        else if (Input.GetAxis("Left_Horizontal_P1") < 0 || Input.GetAxis("Horizontal2") < 0) // 왼쪽
         {
             flip.x = -Mathf.Abs(flip.x);
             m_playerSprite.transform.localScale = flip;
@@ -98,7 +104,7 @@ public class Player1Controller : MonoBehaviour {
         m_playerAnimator.SetFloat("Speed", Mathf.Abs(rigid.velocity.x));    // 걷기 애니메이션
 
         /*   발사 처리   */
-        if (Input.GetAxis("360_Trigger_P1") > 0 && m_curWaterGauge > 0 && !isOverLoad)
+        if (( Input.GetMouseButton(0)|| Input.GetAxis("360_Trigger_P1") > 0 && m_curWaterGauge > 0) && !isOverLoad)
         {
             m_soundPlayer.clip = m_fireSound;
             if(!m_soundPlayer.isPlaying)
@@ -133,28 +139,54 @@ public class Player1Controller : MonoBehaviour {
         }
         GUIupdate();
     }
-    void RotateFirePosition()
+    void RotateFirePosition() // 컨트롤러 조준 방향 회전
     {
         m_fireAngle = GetAngle(Input.GetAxis("Right_Horizontal_P1"), Input.GetAxis("Right_Vertical_P1"));
         m_fireEulerAngle.eulerAngles = new Vector3(0, 0, m_fireAngle);
         m_firePosition.rotation = Quaternion.Slerp(m_firePosition.rotation, m_fireEulerAngle, 10 * Time.deltaTime);
     }
-    void Fire()
+    void RotateToMouse() // 마우스 조준 방향 회전
+    {
+        //먼저 계산을 위해 마우스와 게임 오브젝트의 현재의 좌표를 임시로 저장합니다.
+        Vector3 mPosition = Input.mousePosition; //마우스 좌표 저장
+
+        //카메라가 앞면에서 뒤로 보고 있기 때문에, 마우스 position의 z축 정보에 
+        //게임 오브젝트와 카메라와의 z축의 차이를 입력시켜줘야 합니다.
+        mPosition.z = transform.position.z - Camera.main.transform.position.z;
+
+        //화면의 픽셀별로 변화되는 마우스의 좌표를 유니티의 좌표로 변화해 줘야 합니다.
+        //그래야, 위치를 찾아갈 수 있겠습니다.
+        Vector3 target = Camera.main.ScreenToWorldPoint(mPosition);
+
+        //우선 각 축의 거리를 계산하여, dy, dx에 저장해 둡니다.
+        Vector3 direction = target - m_firePosition.position;
+
+        //아크탄젠트 Atan2()함수의 결과 값은 라디안
+        //라디안 값을 각도로 변화하기 위해 Rad2Deg를 곱해주어야 각도가 됩니다.
+        float rotateDegree = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        m_fireAngle = rotateDegree;
+        m_fireEulerAngle.eulerAngles = new Vector3(0, 0, rotateDegree);
+
+        //구해진 각도를 오일러 회전 함수에 적용하여 z축을 기준으로 게임 오브젝트를 회전시킵니다.
+        m_firePosition.rotation = Quaternion.Slerp(m_firePosition.rotation, m_fireEulerAngle, 10 * Time.deltaTime);
+    }
+    void Fire() // 발사에 관한 함수
     {
         GamePad.SetVibration(0, 1, 1);  // 컨트롤러 진동
         if(m_curWaterGauge > 0)
             m_curWaterGauge -= Time.deltaTime * m_waterRate;
-        if (Water.count > 100)
+        if (Water.count > 100) // 오브젝트 풀은 100개 제한
         {
             if(Water.WaterList.Count > 0)
             {
                 Water forspawn;
                 m_water = Water.WaterList.Dequeue();
-                forspawn = m_water.GetComponent<Water>();
+                forspawn = m_water.GetComponent<Water>();              
 
                 m_water.transform.position = m_firePosition.position;
                 m_water.transform.rotation = m_fireEulerAngle;
                 forspawn.Angle = m_fireAngle;
+                forspawn.Clear();
 
                 m_water.SetActive(true);
             }   
