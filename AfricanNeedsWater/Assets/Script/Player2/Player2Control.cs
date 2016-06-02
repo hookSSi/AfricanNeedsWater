@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Player2Control : MonoBehaviour
@@ -7,29 +8,41 @@ public class Player2Control : MonoBehaviour
 	public GameObject[] scoreCoin;
 	public GameObject scoreBar;
 	public GameObject obj_Child;
+	public Image gauge;
 
 	private int forwardValue = 1;
 	private int count_ScoreCoin;
+	private float time;
 	private float speed = 200f;
 	private float jumpHeight = 400f;
 	private float animationSpeed = 1f;
+	private float gauge_MIN = 3.51f;
+	private float gauge_MAX = 4f;
+	private float value_Dash = 0.01f;
 	private bool isDash, isJumpping;
-	private bool isChanging;
+	private bool overload;
+	private bool fever;
 
 	// Use this for initialization
 	void Start()
 	{
 		foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+		time = 0;
 		count_ScoreCoin = 0;
 		anim.enabled = false;
 		isJumpping = false;
-		isChanging = false;
+		overload = false;
+		fever = false;
 	}
 
 	// Update is called once per frame
 	void FixedUpdate()
 	{
 		Move();
+		CheckGauge();
+
+		if (overload) Overload();
+
 		SetAnimationSpeed();
 		SetScoreCoin();
 	}
@@ -50,10 +63,18 @@ public class Player2Control : MonoBehaviour
 			else GetComponent<Rigidbody2D>().velocity = new Vector2(forwardValue * speed, GetComponent<Rigidbody2D>().velocity.y);
 		}
 
-		if (Input.GetButton("Dash") && GameManager.isPlaying)
+		if (Input.GetButton("Dash") && GameManager.isPlaying && !overload)
 		{
 			speed = 600;
 			isDash = true;
+			fever = true;
+		}
+
+		if (Input.GetButtonUp("Dash"))
+		{
+			fever = false;
+			isDash = false;
+			speed = 300;
 		}
 
 		if (Input.GetButton("Jump") && !isJumpping && GameManager.isPlaying)
@@ -61,11 +82,6 @@ public class Player2Control : MonoBehaviour
 			isJumpping = true;
 			anim.SetTrigger("Jump");
 			GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
-
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			//this.GetComponent<BoxCollider2D>().enabled = false;
-			//obj_Child.GetComponent<BoxCollider2D>().enabled = false;
-			//transform.position = new Vector3(transform.position.x, transform.position.y, -5);
 		}
 
 		if (forwardValue == 1) transform.eulerAngles = new Vector3(0, 0, 0);
@@ -102,20 +118,54 @@ public class Player2Control : MonoBehaviour
 
 	void SetScoreCoin()
 	{
-		if (count_ScoreCoin == 25 && !isChanging) isChanging = true;
-
-		if (isChanging)
+		//if (count_ScoreCoin == 25 && !isChanging) isChanging = true;
+		if (count_ScoreCoin == 5)
 		{
-			foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
+			count_ScoreCoin = 0;
+		}
+
+		/*if (isChanging)
+		{
+			//foreach (GameObject obj in scoreCoin) obj.SetActive(false);
 			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
 
 			count_ScoreCoin = 0;
 			isChanging = false;
+		}*/
+
+		//if (count_ScoreCoin > 0) scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
+	}
+
+	void CheckGauge()
+	{
+		if (isDash) gauge.fillAmount -= value_Dash;
+		else gauge.fillAmount += value_Dash * 0.5f;
+
+		if (gauge.fillAmount == 0)
+		{
+			gauge.color = new Color(1, 0, 0, 1);
+			//gauge.color = Color.red;
+			overload = true;
+			fever = false;
 		}
 
-		if (count_ScoreCoin > 0) scoreCoin[(count_ScoreCoin / 5) % 5].SetActive(true);
+		gauge.transform.position = new Vector3(transform.position.x, transform.position.y + 75, transform.position.z);
 	}
-	
+
+	void Overload()
+	{
+		time += Time.deltaTime;
+		gauge.color += new Color(0, 1f / 255, 1f / 255, 0);
+
+		if (time >= 3)
+		{
+			time = 0;
+			gauge.color = new Color(1, 1, 1, 1);
+			overload = false;
+		}
+	}
+
 	protected void OnCollisionEnter2D(Collision2D col)
 	{
 		if (isJumpping && col.gameObject.tag == "Ground")
@@ -126,15 +176,24 @@ public class Player2Control : MonoBehaviour
 
 		if (col.gameObject.tag == "Water")
 		{
-			col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
-			GameManager.isPlaying = false;
-			anim.SetTrigger("Die");
+			if (!fever)
+			{
+				col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
+				GameManager.isPlaying = false;
+				anim.SetTrigger("Die");
 
-			transform.eulerAngles = new Vector3(0, 180, 20);
-			transform.position = new Vector3(transform.position.x, transform.position.y, -5);
-			GetComponent<Rigidbody2D>().velocity = new Vector2(-forwardValue * speed, jumpHeight);
-			this.GetComponent<BoxCollider2D>().enabled = false;
-			obj_Child.GetComponent<BoxCollider2D>().enabled = false;
+				transform.eulerAngles = new Vector3(0, 180, 20);
+				transform.position = new Vector3(transform.position.x, transform.position.y, -5);
+				GetComponent<Rigidbody2D>().velocity = new Vector2(-forwardValue * speed, jumpHeight);
+				this.GetComponent<BoxCollider2D>().enabled = false;
+				obj_Child.GetComponent<BoxCollider2D>().enabled = false;
+			}
+
+			else
+			{
+				col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
+				AddCount_ScoreCoin();
+			}
 		}
 	}
 }
