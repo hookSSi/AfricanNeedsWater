@@ -59,13 +59,11 @@ public class Water : MonoBehaviour {
         else
             return false;
     }
-	protected virtual void OnCollisionEnter2D(Collision2D other)
+	protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Ground" || other.gameObject.tag == "Wall")
         {
-            Instantiate(m_particle, transform.position, transform.rotation);
-            WaterList.Enqueue(this.gameObject);
-            this.gameObject.SetActive(false);
+            DestroyWater();
         }
 
 		/*if (other.gameObject.tag == "Player2")
@@ -76,14 +74,19 @@ public class Water : MonoBehaviour {
 			this.gameObject.SetActive(false);
 		}*/
 	}
-
+    protected virtual void DestroyWater()
+    {
+        Instantiate(m_particle, transform.position, transform.rotation);
+        WaterList.Enqueue(this.gameObject);
+        this.gameObject.SetActive(false);
+    }
 	public void HandlePlayer2Collision()
 	{
 		Instantiate(m_particle, transform.position, transform.rotation);
 		WaterList.Enqueue(this.gameObject);
 		this.gameObject.SetActive(false);
 	}
-    public void Clear()
+    public virtual void Clear()
     {
         m_dx = Mathf.Cos(m_Angle * Mathf.Deg2Rad);
         m_dy = Mathf.Sin(m_Angle * Mathf.Deg2Rad);
@@ -109,6 +112,17 @@ public class Water : MonoBehaviour {
         set
         {
             m_Angle = value;
+        }
+    }
+    public Quaternion EulerAngle
+    {
+        get
+        {
+            return EulerAngle;
+        }
+        set
+        {
+            m_fireEulerAngle = value;
         }
     }
 }
