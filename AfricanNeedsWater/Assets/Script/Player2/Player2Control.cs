@@ -126,7 +126,7 @@ public class Player2Control : MonoBehaviour
 	void SetScoreCoin()
 	{
 		//if (count_ScoreCoin == 25 && !isChanging) isChanging = true;
-		if (count_ScoreCoin == 5)
+		if (count_ScoreCoin == 2)
 		{
 			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
 			count_ScoreCoin = 0;

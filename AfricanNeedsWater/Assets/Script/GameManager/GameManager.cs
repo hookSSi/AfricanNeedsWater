@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
 	public void AddTextureCrop()
 	{
-		if (textureCrop.height <= 0.45f) textureCrop.height += 0.005f;
+		if (textureCrop.height <= 0.45f) textureCrop.height += 0.07f;
 		else
 		{
 			SetStage();
