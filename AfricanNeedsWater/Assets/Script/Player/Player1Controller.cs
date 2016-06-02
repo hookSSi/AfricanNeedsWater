@@ -60,7 +60,7 @@ public class Player1Controller : MonoBehaviour {
         {
             RotateFirePosition();
         }
-        else if(Input.GetJoystickNames().Length != 0)
+        else if(Input.GetJoystickNames().Length == 0)
         {
             RotateToMouse();
         }
