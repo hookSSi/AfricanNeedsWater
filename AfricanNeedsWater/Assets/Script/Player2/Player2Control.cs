@@ -174,7 +174,6 @@ public class Player2Control : MonoBehaviour
 
 	void DashIllusion()
 	{
-		//Debug.Log(anim.GetComponent<SpriteRenderer>().sprite);
 		for (int i = 0; i < 10; i++)
 		{
 			if(anim.GetComponent<SpriteRenderer>().sprite.name == sprite[i])
@@ -184,7 +183,7 @@ public class Player2Control : MonoBehaviour
 		if (isJumpping) Instantiate(dashJumpSprite, this.transform.position, this.transform.rotation);
 	}
 
-	protected void OnCollisionEnter2D(Collision2D col)
+	protected void OnTriggerEnter2D(Collider2D col)
 	{
 		if (isJumpping && col.gameObject.tag == "Ground")
 		{
