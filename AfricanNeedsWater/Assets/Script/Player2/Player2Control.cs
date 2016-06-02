@@ -6,6 +6,8 @@ public class Player2Control : MonoBehaviour
 {
 	public Animator anim;
 	public GameObject[] scoreCoin;
+	public GameObject[] dashSprite;
+	public GameObject dashJumpSprite;
 	public GameObject scoreBar;
 	public GameObject obj_Child;
 	public Image gauge;
@@ -22,6 +24,7 @@ public class Player2Control : MonoBehaviour
 	private bool isDash, isJumpping;
 	private bool overload;
 	private bool fever;
+	private string[] sprite = { "P2_1", "P2_2", "P2_3", "P2_4", "P2_5", "P2_6", "P2_7", "P2_8", "P2_9", "P2_10" };
 
 	// Use this for initialization
 	void Start()
@@ -42,9 +45,12 @@ public class Player2Control : MonoBehaviour
 		CheckGauge();
 
 		if (overload) Overload();
+		if (isDash) DashIllusion();
 
 		SetAnimationSpeed();
 		SetScoreCoin();
+
+		//Debug.Log(anim.GetComponent<SpriteRenderer>().sprite.name);
 	}
 
 	void Move()
@@ -53,6 +59,7 @@ public class Player2Control : MonoBehaviour
 		{
 			anim.enabled = true;
 			forwardValue = Input.GetAxis("Horizontal") > 0 ? 1 : -1;
+
 			if (isDash)
 			{
 				GetComponent<Rigidbody2D>().velocity = new Vector2(forwardValue * speed, GetComponent<Rigidbody2D>().velocity.y);
@@ -145,7 +152,6 @@ public class Player2Control : MonoBehaviour
 		if (gauge.fillAmount == 0)
 		{
 			gauge.color = new Color(1, 0, 0, 1);
-			//gauge.color = Color.red;
 			overload = true;
 			fever = false;
 		}
@@ -164,6 +170,18 @@ public class Player2Control : MonoBehaviour
 			gauge.color = new Color(1, 1, 1, 1);
 			overload = false;
 		}
+	}
+
+	void DashIllusion()
+	{
+		//Debug.Log(anim.GetComponent<SpriteRenderer>().sprite);
+		for (int i = 0; i < 10; i++)
+		{
+			if(anim.GetComponent<SpriteRenderer>().sprite.name == sprite[i])
+				Instantiate(dashSprite[i], this.transform.position, this.transform.rotation);
+		}
+
+		if (isJumpping) Instantiate(dashJumpSprite, this.transform.position, this.transform.rotation);
 	}
 
 	protected void OnCollisionEnter2D(Collision2D col)
