@@ -4,7 +4,8 @@ using XInputDotNetPure;
 
 public class Player1Controller : MonoBehaviour {
 
-    public GameObject m_water; // 물
+    public GameObject[] m_waters; // 물 배열
+    private GameObject m_water; // 물
     public GameObject m_playerSprite; // 플레이어 이미지
     public Transform m_firePosition;    // 발사 위치
     public float m_speed;   // 속도
@@ -33,8 +34,11 @@ public class Player1Controller : MonoBehaviour {
     public Material m_effectMaterial; // 과부하 효과 메터리얼
     private SpriteRenderer m_spriteRenderer; // 스프라이트 랜더러
 
+    private int testInput = 0; // 스테이지 테스트용
+
     void Start ()
     {
+        ChangeWater(0);
         time = 0;
         isOverLoad = false;
         m_curWaterGauge = 100;
@@ -56,12 +60,16 @@ public class Player1Controller : MonoBehaviour {
         {
             RotateFirePosition();
         }
-        /*
-        else
+        else if(Input.GetJoystickNames().Length != 0)
         {
             RotateToMouse();
         }
-        */
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            testInput++;
+            ChangeWater(testInput);
+        }
+           
         OutOfMap();
     }
 
@@ -175,22 +183,20 @@ public class Player1Controller : MonoBehaviour {
         GamePad.SetVibration(0, 1, 1);  // 컨트롤러 진동
         if(m_curWaterGauge > 0)
             m_curWaterGauge -= Time.deltaTime * m_waterRate;
-        if (Water.count > 100) // 오브젝트 풀은 100개 제한
+        if(Water.WaterList.Count > 100)
         {
-            if(Water.WaterList.Count > 0)
-            {
-                Water forspawn;
-                m_water = Water.WaterList.Dequeue();
-                forspawn = m_water.GetComponent<Water>();              
+            Water forspawn;
+            m_water = Water.WaterList.Dequeue();
+            forspawn = m_water.GetComponent<Water>();              
 
-                m_water.transform.position = m_firePosition.position;
-                m_water.transform.rotation = m_fireEulerAngle;
-                forspawn.Angle = m_fireAngle;
-                forspawn.Clear();
+            m_water.transform.position = m_firePosition.position;
+            m_water.transform.rotation = m_fireEulerAngle;
+            forspawn.Angle = m_fireAngle;
+            forspawn.EulerAngle = m_fireEulerAngle;
+            forspawn.Clear();
 
-                m_water.SetActive(true);
-            }   
-        }
+            m_water.SetActive(true);
+        }   
         else
         {
             Water forspawn;
@@ -230,6 +236,19 @@ public class Player1Controller : MonoBehaviour {
         if (!m_soundPlayer.isPlaying)
             m_soundPlayer.Play();
     }
+    public void ChangeWater(int p_stage)
+    {
+        int stage = p_stage;
+        int length = m_waters.Length;
+        if (stage >= length)
+            stage = stage % length;
+
+        Water.WaterList.Clear();
+
+        m_water = m_waters[stage];
+        water = m_water.GetComponent<Water>();
+    }
+
     /*     Get,Set   */
     public float Speed
     {
