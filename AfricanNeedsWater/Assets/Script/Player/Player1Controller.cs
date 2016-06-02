@@ -242,8 +242,8 @@ public class Player1Controller : MonoBehaviour {
         int length = m_waters.Length;
         if (stage >= length)
             stage = stage % length;
-
-        Water.WaterList.Clear();
+        while(Water.WaterList.Count != 0)
+            Water.WaterList.Dequeue().GetComponent<Water>().DestroyObject();
 
         m_water = m_waters[stage];
         water = m_water.GetComponent<Water>();

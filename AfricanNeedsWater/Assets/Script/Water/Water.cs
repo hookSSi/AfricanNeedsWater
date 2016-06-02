@@ -80,6 +80,10 @@ public class Water : MonoBehaviour {
         WaterList.Enqueue(this.gameObject);
         this.gameObject.SetActive(false);
     }
+    public void DestroyObject()
+    {
+        Destroy(this.gameObject);
+    }
 	public void HandlePlayer2Collision()
 	{
 		Instantiate(m_particle, transform.position, transform.rotation);
