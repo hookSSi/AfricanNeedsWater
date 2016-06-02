@@ -9,7 +9,6 @@ public class Player2Control : MonoBehaviour
 	public GameObject scoreBar;
 	public GameObject obj_Child;
 	public Image gauge;
-	public Color gaugeColor;
 
 	private int forwardValue = 1;
 	private int count_ScoreCoin;
@@ -34,8 +33,6 @@ public class Player2Control : MonoBehaviour
 		isJumpping = false;
 		overload = false;
 		fever = false;
-
-		gaugeColor = gauge.color;
 	}
 
 	// Update is called once per frame
@@ -179,7 +176,7 @@ public class Player2Control : MonoBehaviour
 
 		if (col.gameObject.tag == "Water")
 		{
-			/*if (!fever)
+			if (!fever)
 			{
 				col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
 				GameManager.isPlaying = false;
@@ -190,9 +187,9 @@ public class Player2Control : MonoBehaviour
 				GetComponent<Rigidbody2D>().velocity = new Vector2(-forwardValue * speed, jumpHeight);
 				this.GetComponent<BoxCollider2D>().enabled = false;
 				obj_Child.GetComponent<BoxCollider2D>().enabled = false;
-			}*/
+			}
 
-			//else
+			else
 			{
 				col.gameObject.GetComponent<Water>().HandlePlayer2Collision();
 				AddCount_ScoreCoin();
