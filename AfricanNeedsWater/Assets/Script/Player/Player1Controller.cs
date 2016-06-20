@@ -60,7 +60,7 @@ public class Player1Controller : MonoBehaviour {
         {
             RotateFirePosition();
         }
-        else if(Input.GetJoystickNames().Length == 0)
+        else if (Input.GetJoystickNames().Length == 0 || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetMouseButtonDown(0))
         {
             RotateToMouse();
         }
@@ -292,5 +292,10 @@ public class Player1Controller : MonoBehaviour {
         angle = Mathf.Atan2(y, x) * Mathf.Rad2Deg;
 
         return angle;
+    }
+    public void Exit()
+    {
+        GamePad.SetVibration(0, 0, 0);  // 컨트롤러 진동
+        Application.LoadLevel("MainMenu");
     }
 }

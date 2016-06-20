@@ -21,7 +21,7 @@ public class UI_Manager : MonoBehaviour
     }
     public void HowToPlay()
     {
-        Application.LoadLevel("HowToPlay");
+        Application.LoadLevel("Tutorial");
     }
     public void Exit()
     {
