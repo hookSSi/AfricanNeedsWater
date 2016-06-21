@@ -26,7 +26,6 @@ public class Player2Control : MonoBehaviour
 	private bool fever;
 	private string[] sprite = { "P2_1", "P2_2", "P2_3", "P2_4", "P2_5", "P2_6", "P2_7", "P2_8", "P2_9", "P2_10" };
 
-	// Use this for initialization
 	void Start()
 	{
 		foreach (GameObject obj in scoreCoin) obj.SetActive(false);
@@ -38,7 +37,6 @@ public class Player2Control : MonoBehaviour
 		fever = false;
 	}
 
-	// Update is called once per frame
 	void FixedUpdate()
 	{
 		Move();
@@ -55,6 +53,7 @@ public class Player2Control : MonoBehaviour
 
 	void Move()
 	{
+        // 좌우 이동 입력
 		if (Input.GetButton("Horizontal") && GameManager.isPlaying)
 		{
 			anim.enabled = true;
@@ -70,20 +69,21 @@ public class Player2Control : MonoBehaviour
 			else GetComponent<Rigidbody2D>().velocity = new Vector2(forwardValue * speed, GetComponent<Rigidbody2D>().velocity.y);
 		}
 
-		if (Input.GetButton("Dash") && GameManager.isPlaying && !overload)
+        // 대쉬 입력
+        if ( ( Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ) && GameManager.isPlaying && !overload)
 		{
 			speed = 600;
 			isDash = true;
 			fever = true;
 		}
-
-		if (Input.GetButtonUp("Dash"))
+        else
 		{
 			fever = false;
 			isDash = false;
 			speed = 300;
 		}
 
+        // 점프 입력
 		if (Input.GetButton("Jump") && !isJumpping && GameManager.isPlaying)
 		{
 			isJumpping = true;
@@ -126,7 +126,7 @@ public class Player2Control : MonoBehaviour
 	void SetScoreCoin()
 	{
 		//if (count_ScoreCoin == 25 && !isChanging) isChanging = true;
-		if (count_ScoreCoin == 2)
+        if (count_ScoreCoin == 2 && GameObject.FindWithTag("GameManager") != null)
 		{
 			GameObject.FindWithTag("GameManager").GetComponent<GameManager>().AddTextureCrop();
 			count_ScoreCoin = 0;

@@ -34,11 +34,14 @@ public class Player1Controller : MonoBehaviour {
     public Material m_effectMaterial; // 과부하 효과 메터리얼
     private SpriteRenderer m_spriteRenderer; // 스프라이트 랜더러
 
-    private int testInput = 0; // 스테이지 테스트용
+    private int stage; // 스테이지 테스트용
 
-    void Start ()
+    void Awake()
     {
-        ChangeWater(0);
+        stage = GameManager.GetStage();
+        ChangeWater(stage - 1);
+        Water.count = 0;
+        Water.WaterList.Clear();
         time = 0;
         isOverLoad = false;
         m_curWaterGauge = 100;
@@ -50,102 +53,108 @@ public class Player1Controller : MonoBehaviour {
         flip = m_playerSprite.transform.localScale;
         waterGaugeScale = m_waterGaugeBar.transform.localScale;
         MaxGaugeScale = waterGaugeScale;
-        m_spriteRenderer = m_playerSprite.GetComponent<SpriteRenderer>();
+        m_spriteRenderer = m_playerSprite.GetComponent<SpriteRenderer>();  
     }
 	
 	void Update ()
     {
-        /*   물뿌리개 회전   */
-        if (Input.GetAxis("Right_Horizontal_P1") != 0 || Input.GetAxis("Right_Vertical_P1") != 0)
+        if (GameManager.isPlaying)
         {
-            RotateFirePosition();
-        }
-        else if (Input.GetJoystickNames().Length == 0 || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetMouseButtonDown(0))
-        {
-            RotateToMouse();
-        }
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            testInput++;
-            ChangeWater(testInput);
-        }
-           
-        OutOfMap();
+            /*   물뿌리개 회전   */
+            if (Input.GetAxis("Right_Horizontal_P1") != 0 || Input.GetAxis("Right_Vertical_P1") != 0)
+            {
+                RotateFirePosition();
+            }
+            else if (Input.GetJoystickNames().Length == 0 || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetMouseButtonDown(0))
+            {
+                RotateToMouse();
+            }
+
+            OutOfMap();
+
+            if(GameManager.GetStage() > stage)
+                ChangeWater(stage -1);
+                
+        }    
     }
 
     void FixedUpdate()
     {
-        /*   플레이어 이동 처리   */
-        if (Input.GetAxis("Left_Horizontal_P1") > 0 || Input.GetAxis("Horizontal2") > 0) // 오른쪽
+        if(GameManager.isPlaying)
         {
-            flip.x = Mathf.Abs(flip.x);
-            m_playerSprite.transform.localScale = flip;
-            rigid.velocity = horizontal * m_speed;
-        }
-        else if (Input.GetAxis("Left_Horizontal_P1") < 0 || Input.GetAxis("Horizontal2") < 0) // 왼쪽
-        {
-            flip.x = -Mathf.Abs(flip.x);
-            m_playerSprite.transform.localScale = flip;
-            rigid.velocity = horizontal * -m_speed;
-        }
-        else
-        {
-            rigid.velocity = horizontal * 0;
 
-            /*   랜덤으로 Stand 이벤트 발생   */
-            int rand = 0;
-
-            for (int i = 0; i < 100; i++)
+            /*   플레이어 이동 처리   */
+            if (Input.GetAxis("Left_Horizontal_P1") > 0 || Input.GetAxis("Horizontal2") > 0) // 오른쪽
             {
-                rand += Random.Range(0, 10);
+                flip.x = Mathf.Abs(flip.x);
+                m_playerSprite.transform.localScale = flip;
+                rigid.velocity = horizontal * m_speed;
             }
-            if (400 < rand  && rand  < 600)
+            else if (Input.GetAxis("Left_Horizontal_P1") < 0 || Input.GetAxis("Horizontal2") < 0) // 왼쪽
             {
-                m_playerAnimator.SetBool("IsStand", false);
+                flip.x = -Mathf.Abs(flip.x);
+                m_playerSprite.transform.localScale = flip;
+                rigid.velocity = horizontal * -m_speed;
             }
             else
             {
-                m_playerAnimator.SetBool("IsStand", true);
-            }
-        }
+                rigid.velocity = horizontal * 0;
 
-        m_playerAnimator.SetFloat("Speed", Mathf.Abs(rigid.velocity.x));    // 걷기 애니메이션
+                /*   랜덤으로 Stand 이벤트 발생   */
+                int rand = 0;
 
-        /*   발사 처리   */
-        if (( Input.GetMouseButton(0)|| Input.GetAxis("360_Trigger_P1") > 0 && m_curWaterGauge > 0) && !isOverLoad)
-        {
-            m_soundPlayer.clip = m_fireSound;
-            if(!m_soundPlayer.isPlaying)
-                m_soundPlayer.Play();
-            m_waterGaugeBar.SetActive(true);
-            Fire();
-        }
-        /*   물 게이지 관련 처리   */
-        else if(!isOverLoad)
-        {
-            m_waterGaugeBar.SetActive(false);
-            m_soundPlayer.Pause();
-            if (m_curWaterGauge < m_maxWaterGauge)
-                m_curWaterGauge += Time.deltaTime * m_waterRate;
-            GamePad.SetVibration(0, 0, 0);
-        }
-        else if(isOverLoad)
-        {
-            Flash();
-            m_waterGaugeBar.SetActive(true);
-            time += Time.deltaTime;
-            if(time > rechargeTime)
-            {
-                m_curWaterGauge += Time.deltaTime * m_waterRate;
-            }    
-            if(m_curWaterGauge == m_maxWaterGauge)
-            {
-                m_spriteRenderer.material = m_baseMaterial;
-                time = 0;
-                isOverLoad = false;
+                for (int i = 0; i < 100; i++)
+                {
+                    rand += Random.Range(0, 10);
+                }
+                if (400 < rand && rand < 600)
+                {
+                    m_playerAnimator.SetBool("IsStand", false);
+                }
+                else
+                {
+                    m_playerAnimator.SetBool("IsStand", true);
+                }
             }
+
+            m_playerAnimator.SetFloat("Speed", Mathf.Abs(rigid.velocity.x));    // 걷기 애니메이션
+
+            /*   발사 처리   */
+            if ((Input.GetMouseButton(0) || Input.GetAxis("360_Trigger_P1") > 0 && m_curWaterGauge > 0) && !isOverLoad)
+            {
+                m_soundPlayer.clip = m_fireSound;
+                if (!m_soundPlayer.isPlaying)
+                    m_soundPlayer.Play();
+                m_waterGaugeBar.SetActive(true);
+                Fire();
+            }
+            /*   물 게이지 관련 처리   */
+            else if (!isOverLoad)
+            {
+                m_waterGaugeBar.SetActive(false);
+                m_soundPlayer.Pause();
+                if (m_curWaterGauge < m_maxWaterGauge)
+                    m_curWaterGauge += Time.deltaTime * m_waterRate;
+                GamePad.SetVibration(0, 0, 0);
+            }
+            else if (isOverLoad)
+            {
+                Flash();
+                m_waterGaugeBar.SetActive(true);
+                time += Time.deltaTime;
+                if (time > rechargeTime)
+                {
+                    m_curWaterGauge += Time.deltaTime * m_waterRate;
+                }
+                if (m_curWaterGauge == m_maxWaterGauge)
+                {
+                    m_spriteRenderer.material = m_baseMaterial;
+                    time = 0;
+                    isOverLoad = false;
+                }
+            }
+            GUIupdate();
         }
-        GUIupdate();
     }
     void RotateFirePosition() // 컨트롤러 조준 방향 회전
     {

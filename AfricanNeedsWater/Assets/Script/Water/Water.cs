@@ -13,7 +13,7 @@ public class Water : MonoBehaviour {
     protected float m_dy;
     protected Quaternion m_fireEulerAngle;    // 발사 오일러 각도
     protected Rigidbody2D rigid; // Rigidbody2D
-    public static int count = 0;
+    public static int count;
     protected bool isOut;
     public static Queue<GameObject> WaterList = new Queue<GameObject>();   // 물리스트
 

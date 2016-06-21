@@ -17,19 +17,21 @@ public class UI_Manager : MonoBehaviour
     {
         m_mainMenu.SetActive(false);
         m_progressLabel.SetActive(true);
-        StartCoroutine("Load");
+        StartCoroutine("Load","Stage1");
     }
     public void HowToPlay()
     {
-        Application.LoadLevel("Tutorial");
+        m_mainMenu.SetActive(false);
+        m_progressLabel.SetActive(true);
+        StartCoroutine("Load", "Tutorial");
     }
     public void Exit()
     {
         Application.Quit();
     }
-    IEnumerator Load()
+    IEnumerator Load(string level)
     {
-        AsyncOperation async = Application.LoadLevelAsync("Stage1");
+        AsyncOperation async = Application.LoadLevelAsync(level);
 
         while(!async.isDone)
         {
