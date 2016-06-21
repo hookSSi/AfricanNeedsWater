@@ -17,9 +17,10 @@ public class GameManager : MonoBehaviour
 	{
         t = 0;
         isPlaying = true;
-        Screen.SetResolution(Screen.width, Screen.width * 16 / 9, true);
+        Screen.SetResolution(1600, 900, true);
         textureCrop = new Rect(Screen.width - 100, 10, 4f, 0f);
-		object_Text.GetComponent<Text>().text = "Stage " + stage;
+        if(object_Text != null)
+		    object_Text.GetComponent<Text>().text = "Stage " + stage;
 	}
     void Update()
     {
@@ -27,7 +28,10 @@ public class GameManager : MonoBehaviour
         {
             t += Time.deltaTime;
             if(t >= 3f)
+            {
+                isPlaying = true;
                 Application.LoadLevel("MainMenu");
+            }            
         }   
     }
 
