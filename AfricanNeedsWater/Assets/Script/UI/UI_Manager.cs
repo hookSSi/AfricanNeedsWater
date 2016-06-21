@@ -10,7 +10,7 @@ public class UI_Manager : MonoBehaviour
 
     void Start()
     {
-        Screen.SetResolution(1600, 900, true);
+        Screen.SetResolution(Screen.width, Screen.width * 16 / 9, true);
     }
 
     public void PlayStart()

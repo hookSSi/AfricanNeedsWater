@@ -17,10 +17,9 @@ public class GameManager : MonoBehaviour
 	{
         t = 0;
         isPlaying = true;
-        Screen.SetResolution(1600, 900, true);
-        textureCrop = new Rect(Screen.width - 100, 10, 5f, 0f);
-        if(object_Text != null)
-		    object_Text.GetComponent<Text>().text = "Stage " + stage;
+        Screen.SetResolution(Screen.width, Screen.width * 16 / 9, true);
+        textureCrop = new Rect(Screen.width - 100, 10, 4f, 0f);
+		object_Text.GetComponent<Text>().text = "Stage " + stage;
 	}
     void Update()
     {
@@ -28,23 +27,20 @@ public class GameManager : MonoBehaviour
         {
             t += Time.deltaTime;
             if(t >= 3f)
-            {
-                isPlaying = true;
                 Application.LoadLevel("MainMenu");
-            }            
         }   
     }
 
 	void OnGUI()
 	{
-		GUI.BeginGroup(new Rect(10, 10, texture.width * textureCrop.width, texture.height * textureCrop.height));
-        GUI.DrawTexture(new Rect(Screen.width - 100, 15, texture.width * 0.4f, texture.height * 0.4f), texture);
-		GUI.EndGroup();
+		//GUI.BeginGroup(new Rect(10, 10, texture.width * textureCrop.width, texture.height * textureCrop.height));
+        GUI.DrawTexture(new Rect(Screen.width - 100, 10, texture.width * 0.4f, texture.height * 0.4f), texture);
+		//GUI.EndGroup();
 	}
 
 	public void AddTextureCrop()
 	{
-		if (textureCrop.height <= 0.5f) textureCrop.height += 0.07f;
+		if (textureCrop.height <= 0.45f) textureCrop.height += 0.07f;
 		else
 		{
 			SetStage();
