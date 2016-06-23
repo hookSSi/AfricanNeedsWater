@@ -16,7 +16,7 @@ public class ChildScript : MonoBehaviour
 		transform.localEulerAngles = new Vector3(0, 0, 0);
 	}
 
-	protected void OnCollisionEnter2D(Collision2D col)
+	protected void OnTriggerEnter2D(Collider2D col)
 	{
 		if (col.gameObject.tag == "Water")
 		{
