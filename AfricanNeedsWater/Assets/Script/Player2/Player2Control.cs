@@ -28,7 +28,11 @@ public class Player2Control : MonoBehaviour
 
 	void Start()
 	{
-		foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+        if(scoreCoin.Length != 0)
+        {
+            foreach (GameObject obj in scoreCoin) obj.SetActive(false);
+        }
+		   
 		time = 0;
 		count_ScoreCoin = 0;
 		anim.enabled = false;
@@ -94,7 +98,8 @@ public class Player2Control : MonoBehaviour
 		if (forwardValue == 1) transform.eulerAngles = new Vector3(0, 0, 0);
 		else transform.eulerAngles = new Vector3(0, 180, 0);
 
-		scoreBar.transform.eulerAngles = new Vector3(0, 0, 0);
+        if(scoreBar != null)
+		    scoreBar.transform.eulerAngles = new Vector3(0, 0, 0);
 	}
 
 	void SetAnimationSpeed()

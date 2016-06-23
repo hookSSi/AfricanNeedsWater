@@ -16,10 +16,8 @@ public class GameManager : MonoBehaviour
 	void Start()
 	{
         t = 0;
-		
-
 		isPlaying = true;
-        Screen.SetResolution(Screen.width, Screen.width * 16 / 9, true);
+        Screen.SetResolution(1600, 900, true);
         textureCrop = new Rect(Screen.width - 100, 10, 5f, 0f);
 		object_Text.GetComponent<Text>().text = "Stage " + stage;
 	}
