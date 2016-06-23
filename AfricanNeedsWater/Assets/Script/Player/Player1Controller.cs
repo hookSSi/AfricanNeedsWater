@@ -39,7 +39,6 @@ public class Player1Controller : MonoBehaviour {
     void Awake()
     {
         stage = GameManager.GetStage();
-        ChangeWater(stage - 1);
         Water.count = 0;
         Water.WaterList.Clear();
         time = 0;
@@ -49,12 +48,13 @@ public class Player1Controller : MonoBehaviour {
         rigid = GetComponent<Rigidbody2D>();
         horizontal = new Vector3(1, 0, 0);
         m_fireEulerAngle = Quaternion.identity;
-        water = m_water.GetComponent<Water>();
+		ChangeWater(stage - 1);
+		water = m_water.GetComponent<Water>();
         flip = m_playerSprite.transform.localScale;
         waterGaugeScale = m_waterGaugeBar.transform.localScale;
         MaxGaugeScale = waterGaugeScale;
-        m_spriteRenderer = m_playerSprite.GetComponent<SpriteRenderer>();  
-    }
+        m_spriteRenderer = m_playerSprite.GetComponent<SpriteRenderer>();
+	}
 	
 	void Update ()
     {
