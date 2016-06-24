@@ -38,11 +38,11 @@ public class Player1Controller : MonoBehaviour {
 
     void Awake()
     {
-        stage = GameManager.GetStage(); // 장착 무기 초기화
-        ChangeWater(stage - 1);
-
         Water.count = 0; // 물 리스트 초기화
         Water.WaterList.Clear();
+
+        stage = GameManager.GetStage(); // 장착 무기 초기화
+        ChangeWater(stage - 1);
 
         time = 0;
         isOverLoad = false;

@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         t = 0;
 		isPlaying = true;
         Screen.SetResolution(1600, 900, true);
-        textureCrop = new Rect(Screen.width - 100, 10, 5f, 0f);
+        textureCrop = new Rect(Screen.width - 100, 10, 100f, 0f);
 		object_Text.GetComponent<Text>().text = "Stage " + stage;
 	}
     void Update()
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
 		else
 		{
 			SetStage();
-			textureCrop.height = 0;
+			 textureCrop = new Rect(Screen.width - 100, 10, 5f, 0f);
 		}
 	}
 
