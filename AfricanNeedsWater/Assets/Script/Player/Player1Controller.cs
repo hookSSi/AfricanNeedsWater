@@ -38,17 +38,19 @@ public class Player1Controller : MonoBehaviour {
 
     void Awake()
     {
-        stage = GameManager.GetStage();
-        Water.count = 0;
+        stage = GameManager.GetStage(); // 장착 무기 초기화
+        ChangeWater(stage - 1);
+
+        Water.count = 0; // 물 리스트 초기화
         Water.WaterList.Clear();
+
         time = 0;
         isOverLoad = false;
         m_curWaterGauge = 100;
         m_maxWaterGauge = 100;
         rigid = GetComponent<Rigidbody2D>();
         horizontal = new Vector3(1, 0, 0);
-        m_fireEulerAngle = Quaternion.identity;
-		ChangeWater(stage - 1);
+        m_fireEulerAngle = Quaternion.identity;		
 		water = m_water.GetComponent<Water>();
         flip = m_playerSprite.transform.localScale;
         waterGaugeScale = m_waterGaugeBar.transform.localScale;
